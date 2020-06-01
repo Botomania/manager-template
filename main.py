@@ -1,3 +1,6 @@
+import sys
+import json
+
 from flask import Flask, request, jsonify
 
 from errors import panic, errors
@@ -34,6 +37,19 @@ def act():
 @app.route("/state", methods=["GET"])
 def state():
     return m.get_state()
+
+
+@app.route("/invalid", methods=["POST"])
+def invalid():
+    player = request.json["player"]
+    m.invalidate(player["id"])
+
+    return json.dumps({"success": True})
+
+
+@app.route("/quit", methods=["POST"])
+def quit():
+    sys.exit(0)
 
 
 if __name__ == "__main__":

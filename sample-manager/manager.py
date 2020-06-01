@@ -35,18 +35,36 @@ class Manager:
         """
         return json.dumps({"state": self.state})
 
+    def invalidate(self, player_id):
+        """
+        This player_id made an invalid move
+        OR timeout
+        OR other error
+
+        remove from active list
+        """
+        del self.players[
+            self.players.index(
+                list(filter(lambda x: x["id"] == player_id, self.players))[0]
+            )
+        ]
+
     def manage(self, player, action):
         """
         Player player made an action
 
         Returns: dict
             {"error": "message"} if error
-            {"state": ..., "next": <id>}
+            {"winner": [<id>, <id>, ...]} if game over
+            {"state": ..., "next": [<id>, <id>, ...]}
         """
         if action != self.state + 1:
             return json.dumps({"error": "Illegal move"})
 
+        if len(self.players) == 1:
+            return json.dumps({"winner": [self.players[0]["id"]]})
+
         self.state = action
-        next = action % len(self.players)
+        next = [action % len(self.players)]
 
         return json.dumps({"state": self.state, "next": self.players[next]["id"]})
