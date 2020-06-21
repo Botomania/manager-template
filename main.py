@@ -49,7 +49,8 @@ def invalid():
 
 @app.route("/quit", methods=["POST"])
 def quit():
-    sys.exit(0)
+    request.environ.get("werkzeug.server.shutdown")()
+    return "Shutting down..."
 
 
 if __name__ == "__main__":
