@@ -1,0 +1,129 @@
+openapi: 3.0.0
+info:
+  description: This will decide the next player and validate actions from other players
+  version: 0.0.1
+  title: "interactive::game_manager"
+  contact:
+    email: yoogottam.khandelwal@students.iiit.ac.in
+paths:
+  /init:
+    post:
+      summary: Start the whole process
+      description: The manager object is created. It gets to know about the players who are playing.
+      operationId: init
+      requestBody:
+        description: The list of players playing the game with some metadata
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                players:
+                  type: array
+                  items:
+                    type: object
+                  example: [{"id": 1, "name": "player1"}, {"id": 2, "name": "player2"}]
+      responses:
+        200:
+          description: Successfully extracted action from code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+  /action:
+    post:
+      summary: Evaluate the action given by the player
+      description: The player (probably via some middleman) sent an action for the current state. This evaluates the action
+      operationId: evaluate
+      requestBody:
+        description: Specifies the action and who made it
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                player:
+                  type: object
+                  example: {"id": 1, "name": "player1"}
+                action:
+                  type: integer
+                  example: 42
+      responses:
+        200:
+          description: Successfully processed the given action
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                error:
+                  value:
+                    error: Illegal move
+                gameOver:
+                  value:
+                    winner: [1]
+                normal:
+                  value:
+                    state: 43
+                    next: [2]
+  /state:
+    post:
+      summary: Returns current game state
+      description: Returns the game state, as maintained by the manager. May be used for forwarding it to the players or for viewing the game on a website
+      operationId: get_state
+      responses:
+        200:
+          description: Current game state
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: integer
+                    example: 42
+  /invalid:
+    post:
+      summary: Invalidate a player
+      description: A player either made an illegal move OR the request timed out. The player is disqualified and can't play anymore. Remove the player from active list
+      requestBody:
+        description: The player who got disqualified
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                player:
+                  type: object
+                  example: {"id": 1, "name": "player1"}
+      responses:
+        200:
+          description: Successfully removed the player from active list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+  /quit:
+    post:
+      summary: Quit this server
+      description: When the game is over and this manager is no longer required. Shutting down server to reduce resource usage
+      operationId: quit
+      responses:
+        200:
+          description: Starts the process of shutting down
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Shutting down...
