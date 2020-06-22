@@ -1,0 +1,39 @@
+docker:
+  image: docker
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+    - cp -r sample-python submission
+  script:
+    - export IMAGE_TAG_PREFIX="$DOCKER_USERNAME/interactive:game-manager"
+    - export IMAGE_TAG="$IMAGE_TAG_PREFIX-${CI_COMMIT_SHA:0:8}"
+    - docker build -t "$IMAGE_TAG" .
+    - docker tag "$IMAGE_TAG" "$IMAGE_TAG_PREFIX"
+    - docker push "$IMAGE_TAG"
+    - docker push "$IMAGE_TAG_PREFIX"
+  only:
+    - master
+
+client:
+  image:
+    name: openapitools/openapi-generator-cli
+    entrypoint: ["/bin/sh", "-c"]
+  variables:
+    CLI: "/opt/openapi-generator/modules/openapi-generator-cli/target/openapi-generator-cli.jar"
+  before_script:
+    - apk add --update git openssh-client
+    - mkdir -p ~/.ssh && echo "$SSH_DEPLOY_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -t rsa gitlab.com > ~/.ssh/known_hosts
+    - git config --global user.email felicity-threads@outlook.com
+    - git config --global user.name felicity-threads
+  script:
+    - git clone git@gitlab.com:felicity-threads/interactive-game-manager-client.git /client
+    - rm -rf /client/*
+    - java -jar "$CLI" generate -i spec.yaml -g python -c config.json -o /client
+    - cd /client && git add -A
+    - git commit -m "${CI_COMMIT_SHA:0:8}" || true
+    - git push origin master
+  only:
+    - master
