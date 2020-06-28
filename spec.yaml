@@ -77,7 +77,7 @@ paths:
                     state: 43
                     next: 2
   /state:
-    post:
+    get:
       tags:
        - "manager"
       summary: Returns current game state
