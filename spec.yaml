@@ -8,6 +8,8 @@ info:
 paths:
   /init:
     post:
+      tags:
+       - "manager"
       summary: Start the whole process
       description: The manager object is created. It gets to know about the players who are playing.
       operationId: init
@@ -37,6 +39,8 @@ paths:
                     example: true
   /action:
     post:
+      tags:
+       - "manager"
       summary: Evaluate the action given by the player
       description: The player (probably via some middleman) sent an action for the current state. This evaluates the action
       operationId: evaluate
@@ -74,6 +78,8 @@ paths:
                     next: [2]
   /state:
     post:
+      tags:
+       - "manager"
       summary: Returns current game state
       description: Returns the game state, as maintained by the manager. May be used for forwarding it to the players or for viewing the game on a website
       operationId: get_state
@@ -90,6 +96,8 @@ paths:
                     example: 42
   /invalid:
     post:
+      tags:
+       - "manager"
       summary: Invalidate a player
       description: A player either made an illegal move OR the request timed out. The player is disqualified and can't play anymore. Remove the player from active list
       requestBody:
@@ -116,6 +124,8 @@ paths:
                     example: true
   /quit:
     post:
+      tags:
+       - "manager"
       summary: Quit this server
       description: When the game is over and this manager is no longer required. Shutting down server to reduce resource usage
       operationId: quit
