@@ -100,6 +100,7 @@ paths:
        - "manager"
       summary: Invalidate a player
       description: A player either made an illegal move OR the request timed out. The player is disqualified and can't play anymore. Remove the player from active list
+      operationId: invalidate
       requestBody:
         description: The player who got disqualified
         required: true
