@@ -6,7 +6,7 @@ docker:
     - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
     - cp -r sample-manager manager
   script:
-    - export IMAGE_TAG_PREFIX="$DOCKER_USERNAME/interactive:game-manager"
+    - export IMAGE_TAG_PREFIX="$DOCKER_USERNAME/interactive:manager"
     - export IMAGE_TAG="$IMAGE_TAG_PREFIX-${CI_COMMIT_SHA:0:8}"
     - docker build -t "$IMAGE_TAG" .
     - docker tag "$IMAGE_TAG" "$IMAGE_TAG_PREFIX"

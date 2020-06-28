@@ -75,7 +75,7 @@ paths:
                 normal:
                   value:
                     state: 43
-                    next: [2]
+                    next: 2
   /state:
     post:
       tags:

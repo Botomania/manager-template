@@ -56,7 +56,7 @@ class Manager:
         Returns: dict
             {"error": "message"} if error
             {"winner": [<id>, <id>, ...]} if game over
-            {"state": ..., "next": [<id>, <id>, ...]}
+            {"state": ..., "next": <id>}
         """
         if action != self.state + 1:
             return json.dumps({"error": "Illegal move"})
@@ -65,6 +65,6 @@ class Manager:
             return json.dumps({"winner": [self.players[0]["id"]]})
 
         self.state = action
-        next = [action % len(self.players)]
+        next = action % len(self.players)
 
         return json.dumps({"state": self.state, "next": self.players[next]["id"]})
