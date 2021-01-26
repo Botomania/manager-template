@@ -33,7 +33,7 @@ class Manager:
 
         The value of key "state" will be sent (or printed) at the player's side
         """
-        return json.dumps({"state": self.state})
+        return {"state": self.state}
 
     def invalidate(self, player_id):
         """
@@ -59,12 +59,12 @@ class Manager:
             {"state": ..., "next": <id>}
         """
         if action != self.state + 1:
-            return json.dumps({"error": "Illegal move"})
+            return {"error": "Illegal move"}
 
         if len(self.players) == 1:
-            return json.dumps({"winner": [self.players[0]["id"]]})
+            return {"winner": [self.players[0]["id"]]}
 
         self.state = action
         next = action % len(self.players)
 
-        return json.dumps({"state": self.state, "next": self.players[next]["id"]})
+        return {"state": self.state, "next": self.players[next]["id"]}

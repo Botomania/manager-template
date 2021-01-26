@@ -31,12 +31,12 @@ def init():
 def act():
     player = request.json["player"]
     action = request.json["action"]
-    return m.manage(player, action)
+    return jsonify(m.manage(player, action))
 
 
 @app.route("/state", methods=["GET"])
 def state():
-    return m.get_state()
+    return jsonify(m.get_state())
 
 
 @app.route("/invalid", methods=["POST"])
